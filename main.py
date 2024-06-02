@@ -1,10 +1,10 @@
 from collections import defaultdict
-from datetime import datetime
+from datetime import date
 
 class Operation:
-    def __init__(self, amount: int, date: str):
+    def __init__(self, amount: int, d: str):
         self.amount = amount
-        self.date = date
+        self.date = date.fromisoformat(d)
 
 class Statement:
     def __init__(self, balance: int, operations: list[Operation]) -> None:
@@ -26,7 +26,12 @@ class Bank:
         self.operations[account].append(operation)
 
     def balance(self, account: int) -> int:
-        return self.balances[account]
+        b = 0
+        t = date.today()
+        for op in self.operations[account]:
+            if t >= op.date:
+                b += op.amount
+        return b
 
     def statements(self, account: int, start: str, end: str) -> dict[str, Statement]:
         return {}
@@ -40,4 +45,7 @@ assert bank.statements(1, '2023-01-01', '2023-12-31') == {}
 bank.add_operation(1, Operation(100000, '2050-01-01'))
 # operations in the future shouldn't affect current balance
 assert bank.balance(1) == 0
+
+bank.add_operation(1, Operation(100000, '2024-04-15'))
+assert bank.balance(1) == 100000
 assert bank.debt_periods(1) == []
