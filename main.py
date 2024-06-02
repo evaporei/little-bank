@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import datetime
 
 class Operation:
     def __init__(self, amount: int, date: str, account: int):
@@ -24,14 +25,16 @@ class Bank:
     def add_operation(self, operation: Operation):
         pass
 
-    def get_balance(self, account: int) -> int:
+    def balance(self, account: int) -> int:
         return self.balances[account]
 
-    def get_statement(self) -> dict[str, Statement]:
-        pass
+    def statements(self, account: int, start: str, end: str) -> dict[str, Statement]:
+        return {}
     
-    def get_debt_periods(self) -> list[Debt]:
-        pass
+    def debt_periods(self, account: int) -> list[Debt]:
+        return []
 
 bank = Bank()
-assert bank.get_balance(1) == 0
+assert bank.balance(1) == 0
+assert bank.statements(1, '2023-01-01', '2023-12-31') == {}
+assert bank.debt_periods(1) == []
