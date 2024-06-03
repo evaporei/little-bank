@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from datetime import date
 
 class Operation:
@@ -20,15 +20,18 @@ class Debt:
 class Bank:
     def __init__(self):
         self.balances = defaultdict(int)
-        self.operations = defaultdict(list)
+        self.operations = OrderedDict()
 
     def add_operation(self, account: int, operation: Operation):
-        self.operations[account].append(operation)
+        l = self.operations[account].get(operation.date, [])
+        l.append(operation)
+        self.operations[account] = l
 
     def balance(self, account: int) -> int:
         b = 0
         t = date.today()
-        for op in self.operations[account]:
+        dates = self.operations[account].keys()
+        for op in :
             if t >= op.date:
                 b += op.amount
         return b
@@ -48,4 +51,8 @@ assert bank.balance(1) == 0
 
 bank.add_operation(1, Operation(100000, '2024-04-15'))
 assert bank.balance(1) == 100000
+bank.add_operation(1, Operation(10000, '2024-04-15'))
+assert bank.balance(1) == 110000
+bank.add_operation(1, Operation(1000, '2010-01-01'))
+assert bank.balance(1) == 111000
 assert bank.debt_periods(1) == []
